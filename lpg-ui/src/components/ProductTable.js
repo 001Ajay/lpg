@@ -11,27 +11,23 @@ class ProductTable extends React.Component {
         super(props);
         this.state = {
             data: [],
-            columns:[
-                { Header: "NAME", accessor: "name"},
-                { Header: "DESCRIPTION", accessor: "description"},
-                { Header: "CATEGORY", accessor: "category"},
-                { Header: "CREATION DATE", accessor: "creation_date"},
-                { Header: "UPDATE DATE", accessor: "update_date"},
-                { Header: "LAST PURCHASED", accessor: "last_purchased"}
-            ],
-            loading: true
+            loading: true,
+            categories: []
         };
     }
 
     componentDidMount() {
-        const productData = this.getData().then(data => {
+        this.getProductData().then(data => {
             this.setState({ data: data, loading: false });
+        });
+        this.getCategoryData().then(data => {
+            this.setState({ categories: data});
         });
     }
 
-    async getData() {
+    async getProductData() {
         console.log("fetching product information...");
-        const result = await fetch("http://localhost:8080/products/")
+        const result = await fetch("http://localhost:8080/products")
             .then(response => response.json());
         console.log("product data received");
         return result.map(row => {
@@ -46,13 +42,41 @@ class ProductTable extends React.Component {
         });
     }
 
-    defaultFilter(filter, row) {
+    async getCategoryData() {
+        console.log("fetching category information...");
+        const result = await fetch("http://localhost:8080/products/categories")
+            .then(response => response.json());
+        console.log("category data received");
+        return result;
+    }
+
+    defaultFilter = function(filter, row) {
         return row[filter.id].toUpperCase().includes(filter.value.toUpperCase());
     };
 
     render () {
-        const { data, loading, columns } = this.state;
+        const { data, loading, categories } = this.state;
         if(!loading){
+
+            const columns = [
+                { Header: "NAME", accessor: "name", filterMethod: this.defaultFilter},
+                { Header: "DESCRIPTION", accessor: "description", filterMethod: this.defaultFilter},
+                { Header: "CATEGORY", accessor: "category", filterMethod: this.defaultFilter,
+                    Filter: ({ filter, onChange }) =>
+                    <select
+                        onChange={event => onChange(event.target.value)}
+                        style={{ width: "100%" }}
+                        value={filter ? filter.value : ""}
+                    >
+                        <option value="">Show All</option>
+                        {categories.map(category => <option value={category.name}>{category.name}</option>)}
+                    </select>
+                },
+                { Header: "CREATION DATE", accessor: "creation_date", filterMethod: this.defaultFilter},
+                { Header: "UPDATE DATE", accessor: "update_date", filterMethod: this.defaultFilter},
+                { Header: "LAST PURCHASED", accessor: "last_purchased", filterMethod: this.defaultFilter}
+            ];
+
             return (<div className='product-table'>
                 <ReactTable
                     data={data}
@@ -60,7 +84,6 @@ class ProductTable extends React.Component {
                     defaultPageSize={10}
                     className="-striped -highlight"
                     filterable
-                    defaultFilterMethod={this.defaultFilter}
                     />
             </div>);
         }
