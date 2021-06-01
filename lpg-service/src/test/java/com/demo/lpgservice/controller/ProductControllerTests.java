@@ -1,5 +1,6 @@
 package com.demo.lpgservice.controller;
 
+import com.demo.lpgservice.exception.LpgException;
 import com.demo.lpgservice.service.ProductService;
 import com.demo.lpgservice.utils.TestHelper;
 import org.junit.Test;
@@ -27,9 +28,40 @@ public class ProductControllerTests {
 
     @Test
     public void getAllProductsTest() throws Exception {
-        Mockito.when(service.getAllProducts()).thenReturn(TestHelper.productSupplier.get());
+        Mockito.when(service.getAllProducts())
+                .thenReturn(TestHelper.productSupplier.get());
         mvc.perform(MockMvcRequestBuilders
-                .get("/products/")
+                .get("/products")
+                .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk());
+    }
+
+    @Test
+    public void getAllProductsExceptionTest() throws Exception {
+        Mockito.when(service.getAllProducts())
+                .thenThrow(new LpgException("TestException", new RuntimeException()));
+        mvc.perform(MockMvcRequestBuilders
+                .get("/products")
+                .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk());
+    }
+
+    @Test
+    public void getAllProductCategoriesTest() throws Exception {
+        Mockito.when(service.getAllProductCategories())
+                .thenReturn(TestHelper.categorySupplier.get());
+        mvc.perform(MockMvcRequestBuilders
+                .get("/products/categories")
+                .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk());
+    }
+
+    @Test
+    public void getAllProductCategoriesExceptionTest() throws Exception {
+        Mockito.when(service.getAllProductCategories())
+                .thenThrow(new LpgException("TestException", new RuntimeException()));
+        mvc.perform(MockMvcRequestBuilders
+                .get("/products/categories")
                 .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk());
     }

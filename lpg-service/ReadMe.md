@@ -3,6 +3,12 @@ Back-end service for LPG app
 
 Server Port: 8080
 
+To start application - 
+Run the java class LpgServiceApplication
+```
+src/main/java/com/demo/lpgservice/LpgServiceApplication.java
+``` 
+
 ## H2 (in memory db)
 - DB Console : http://localhost:8080/h2-console/
 - Username : sa
@@ -42,6 +48,44 @@ Sample response structure -
     "creation_date": "2020-09-20 0:01",
     "update_date": "2020-09-20 0:01",
     "last_purchased": "2020-10-19 0:01"
+  }
+]
+```
+
+### Get all Categories api
+[GET] http://localhost:8080/products/categories
+
+Sample response structure -
+
+```
+[
+  {
+    "id": 1,
+    "name": "Kitchen"
+  },
+  {
+    "id": 2,
+    "name": "Power Tools"
+  },
+  {
+    "id": 3,
+    "name": "Furniture"
+  },
+  {
+    "id": 4,
+    "name": "Electric"
+  },
+  {
+    "id": 5,
+    "name": "Washroom"
+  },
+  {
+    "id": 6,
+    "name": "Textiles"
+  },
+  {
+    "id": 7,
+    "name": "Misc."
   }
 ]
 ```

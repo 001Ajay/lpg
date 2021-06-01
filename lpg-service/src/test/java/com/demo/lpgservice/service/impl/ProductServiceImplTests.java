@@ -1,5 +1,7 @@
 package com.demo.lpgservice.service.impl;
 
+import com.demo.lpgservice.exception.LpgException;
+import com.demo.lpgservice.model.Category;
 import com.demo.lpgservice.model.Product;
 import org.junit.Assert;
 import org.junit.Test;
@@ -18,8 +20,14 @@ public class ProductServiceImplTests {
     private ProductServiceImpl service;
 
     @Test
-    public void getAllProducts(){
+    public void getAllProducts() throws LpgException {
         List<Product> products = service.getAllProducts();
         Assert.assertEquals(34, products.size());
+    }
+
+    @Test
+    public void getAllProductCategories() throws LpgException {
+        List<Category> categories = service.getAllProductCategories();
+        Assert.assertEquals(7, categories.size());
     }
 }
